@@ -1,0 +1,43 @@
+@Library("myshare") _
+pipeline {
+    agent { label 'slave' }
+
+    stages {
+        stage("Hello") {
+            steps {
+                script {
+                    hello()
+                }
+            }
+        }
+        stage("Code Clone") {
+            steps {
+                script {
+                    clone("https://github.com/saparprayag/Node-todo-app.git", "master")
+                }
+            }
+        }
+        stage("Build Code") {
+            steps {
+                script {
+                    build("nodeapp","latest","prayag219")
+                }
+            }
+        }
+        
+        stage("Image pushed to docker hub"){
+            steps {
+                script {
+                    docker_hub("nodeapp","latest","prayag219")
+                }
+            }
+        }
+        stage("Application deployment"){
+            steps {
+                script {
+                    deploy()
+                }
+            }
+        }
+    }
+}
